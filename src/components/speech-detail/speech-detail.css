@@ -1,0 +1,53 @@
+
+#infoDiv {
+  background-image: url(/assets/nature.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right;
+  margin-right: 10px;
+  margin-top: 10px;
+  padding: 1.8em;
+  position: sticky;
+  top: 1em;
+  height: 9.4em;
+}
+
+#infoDiv h1 {
+  font-weight: bold;
+}
+
+#infoDiv p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#messagesList :nth-child(even) ion-label {
+  background: #1976d261 !important;
+  margin: 1em !important;
+  margin-left: 8em !important;
+  padding: 1em !important;
+  border-radius: 16px !important;
+}
+
+#messagesList :nth-child(odd) ion-label {
+  background: #1976d261;
+  margin: 1em;
+  margin-right: 8em;
+  padding: 1em;
+  border-radius: 16px;
+}
+
+#detailList {
+  padding: initial !important;
+}
+
+@media (min-width: 1200px) {
+  #detailList ion-item ion-buttons {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  #detailList ion-item:hover ion-buttons {
+    opacity: 1;
+  }
+}

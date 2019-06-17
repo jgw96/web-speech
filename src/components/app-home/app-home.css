@@ -1,0 +1,149 @@
+#sessionCard {
+  font-weight: bold;
+  background: var(--ion-color-primary);
+  color: white;
+}
+
+#noSessions {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 2em;
+}
+
+#desktopSearch, #desktopFab {
+  display: none;
+}
+
+.items {
+  background: #1976d261;
+  border-radius: 12px;
+  padding-left: 1.8em;
+  padding-right: 1.8em;
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  backdrop-filter: blur(32px);
+}
+
+#sessionsHeader {
+  display: none;
+}
+
+#desktopButtons {
+  margin-left: 1em;
+}
+
+#desktopButtons ion-button {
+  margin-right: 8px;
+}
+
+ion-slide {
+  padding: 1.6em;
+}
+
+.items p {
+  color: white !important;
+}
+
+.items h2 {
+  font-weight: bold !important;
+}
+
+#noSessions p {
+  width: 60%;
+}
+
+ion-slides {
+  height: 75vh;
+}
+
+ion-slide {
+  flex-direction: column;
+}
+
+ion-slide h1 {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+#startButton {
+  margin-top: 4em;
+}
+
+@media(min-width: 400px) {
+  #homeSessionList {
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+}
+
+@media(min-width: 1200px) {
+  #homeSessionList {
+    margin-left: 10em !important;
+    margin-right: 10em !important;
+  }
+
+  #homeFooter ion-toolbar {
+    padding-left: 26em;
+    padding-right: 26em;
+  }
+
+  ion-list {
+    padding-left: 14em !important;
+    padding-right: 14em !important;
+    padding-top: 2em !important;
+  }
+
+  #sessionsHeader {
+    display: block !important;
+    margin-left: 8.4em;
+    margin-bottom: 0;
+    font-size: 1.8em;
+    margin-top: 0;
+  }
+
+  #desktopHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2em;
+  }
+
+  #mobileSearch {
+    display: none;
+  }
+
+  #mobileFab {
+    display: none;
+  }
+
+  #desktopFab {
+    display: initial !important;
+    margin-right: 18em;
+  }
+
+  #desktopSearch {
+    display: block !important;
+    width: 17em;
+    margin-top: 18px;
+    margin-left: 14em;
+  }
+
+  ion-slide {
+    padding-left: 22em;
+    padding-right: 22em;
+  }
+
+  ion-slide img {
+    height: 50% !important;
+  }
+}
+
+@media(min-width: 1200px) {
+  #homeSessionList {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
+}

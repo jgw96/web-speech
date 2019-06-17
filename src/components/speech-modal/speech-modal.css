@@ -1,0 +1,26 @@
+#textP {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 1em;
+}
+
+#speechModalList :nth-child(even) ion-label {
+  background: #1976d261 !important;
+  margin: 1em !important;
+  margin-left: 8em !important;
+  padding: 1em !important;
+  border-radius: 16px !important;
+}
+
+#speechModalList :nth-child(odd) ion-label {
+  background: #1976d261;
+  margin: 1em;
+  margin-right: 8em;
+  padding: 1em;
+  border-radius: 16px;
+}
+
+#speechModalList {
+  padding: initial !important;
+}
