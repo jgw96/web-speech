@@ -24,7 +24,7 @@
 #messagesList :nth-child(even) ion-label {
   background: #1976d261 !important;
   margin: 1em !important;
-  margin-left: 8em !important;
+  margin-left: 4em !important;
   padding: 1em !important;
   border-radius: 16px !important;
 }
@@ -32,9 +32,13 @@
 #messagesList :nth-child(odd) ion-label {
   background: #1976d261;
   margin: 1em;
-  margin-right: 8em;
+  margin-right: 4em;
   padding: 1em;
   border-radius: 16px;
+}
+
+.messageLabelCopyButton {
+  float: right;
 }
 
 #detailList {

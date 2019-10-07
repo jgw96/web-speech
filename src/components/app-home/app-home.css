@@ -1,7 +1,5 @@
 #sessionCard {
   font-weight: bold;
-  background: var(--ion-color-primary);
-  color: white;
 }
 
 #noSessions {
@@ -18,13 +16,12 @@
 }
 
 .items {
-  background: #1976d261;
+  background: #f3f3f3;
   border-radius: 12px;
   padding-left: 1.8em;
   padding-right: 1.8em;
   padding-top: 0.8em;
   padding-bottom: 0.8em;
-  backdrop-filter: blur(32px);
 }
 
 #sessionsHeader {
@@ -44,11 +41,13 @@ ion-slide {
 }
 
 .items p {
-  color: white !important;
+  color: black !important;
 }
 
 .items h2 {
   font-weight: bold !important;
+  color: black;
+  margin-bottom: 10px !important;
 }
 
 #noSessions p {
@@ -56,7 +55,7 @@ ion-slide {
 }
 
 ion-slides {
-  height: 75vh;
+  height: 90vh;
 }
 
 ion-slide {
@@ -91,17 +90,18 @@ ion-slide h1 {
   }
 
   ion-list {
-    padding-left: 14em !important;
-    padding-right: 14em !important;
+    padding-left: 20em !important;
+    padding-right: 20em !important;
     padding-top: 2em !important;
   }
 
   #sessionsHeader {
     display: block !important;
-    margin-left: 8.4em;
+    margin-left: 5.4em;
     margin-bottom: 0;
     font-size: 1.8em;
     margin-top: 0;
+    font-weight: bold;
   }
 
   #desktopHeader {
@@ -121,14 +121,14 @@ ion-slide h1 {
 
   #desktopFab {
     display: initial !important;
-    margin-right: 18em;
+    margin-right: 16em;
   }
 
   #desktopSearch {
     display: block !important;
     width: 17em;
     margin-top: 18px;
-    margin-left: 14em;
+    margin-left: 8.6em;
   }
 
   ion-slide {

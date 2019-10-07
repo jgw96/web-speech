@@ -1,6 +1,6 @@
 {
-  "name": "EasyConvo",
-  "short_name": "EasyConvo",
+  "name": "ConvoNotes",
+  "short_name": "ConvoNotes",
   "start_url": "/",
   "display": "standalone",
   "icons": [
@@ -30,6 +30,6 @@
       "type": "image/png"
     }
   ],
-  "background_color": "#673ab7",
-  "theme_color": "#673ab7"
+  "background_color": "#00458e",
+  "theme_color": "#00458e"
 }

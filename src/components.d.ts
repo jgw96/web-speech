@@ -70,16 +70,16 @@ declare global {
 }
 
 declare namespace LocalJSX {
-  interface AppHome extends JSXBase.HTMLAttributes<HTMLAppHomeElement> {}
-  interface AppProfile extends JSXBase.HTMLAttributes<HTMLAppProfileElement> {
+  interface AppHome {}
+  interface AppProfile {
     'name'?: string;
   }
-  interface AppRoot extends JSXBase.HTMLAttributes<HTMLAppRootElement> {}
-  interface ProfileCreator extends JSXBase.HTMLAttributes<HTMLProfileCreatorElement> {}
-  interface SpeechDetail extends JSXBase.HTMLAttributes<HTMLSpeechDetailElement> {
+  interface AppRoot {}
+  interface ProfileCreator {}
+  interface SpeechDetail {
     'session'?: any;
   }
-  interface SpeechModal extends JSXBase.HTMLAttributes<HTMLSpeechModalElement> {}
+  interface SpeechModal {}
 
   interface IntrinsicElements {
     'app-home': AppHome;
@@ -96,7 +96,14 @@ export { LocalJSX as JSX };
 
 declare module "@stencil/core" {
   export namespace JSX {
-    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
+    interface IntrinsicElements {
+      'app-home': LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
+      'app-profile': LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
+      'app-root': LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+      'profile-creator': LocalJSX.ProfileCreator & JSXBase.HTMLAttributes<HTMLProfileCreatorElement>;
+      'speech-detail': LocalJSX.SpeechDetail & JSXBase.HTMLAttributes<HTMLSpeechDetailElement>;
+      'speech-modal': LocalJSX.SpeechModal & JSXBase.HTMLAttributes<HTMLSpeechModalElement>;
+    }
   }
 }
 

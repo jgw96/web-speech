@@ -1,6 +1,9 @@
-import { Component, Element, Prop, State, h } from '@stencil/core';
+import { Component, Element, State, h } from '@stencil/core';
+
+import { alertController as alertCtrl } from '@ionic/core';
 
 import { get, set } from 'idb-keyval';
+// import * as Comlink from "comlink";
 
 declare var MediaRecorder: any;
 
@@ -14,8 +17,7 @@ export class SpeechModal {
 
   @State() transcript: string = 'You can start talking...';
   @State() messages: Array<string> | null = [];
-
-  @Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement | null = null;
+  // @Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement | null = null;
 
   audioContext: AudioContext;
   recog: any;
@@ -123,7 +125,7 @@ export class SpeechModal {
     this.recog.stopContinuousRecognitionAsync();
     this.mediaRecorder.stop();
 
-    const alert = await this.alertCtrl.create({
+    const alert = await alertCtrl.create({
       header: "Save Session",
       message: "Would you like to save this session?",
       inputs: [
@@ -144,6 +146,7 @@ export class SpeechModal {
         }, {
           text: 'Save',
           handler: async (data) => {
+            // prime for worker
             console.log('Confirm Ok');
 
             if (data.sessionName.length === 0) {
@@ -152,6 +155,10 @@ export class SpeechModal {
 
             let blob = null;
             if (this.chunks) {
+              /*const worker = new Worker("/assets/workers/save-worker.js");
+              const state = await Comlink.wrap(worker);
+              Comlink.transfer(data, this.chunks);*/
+
               let audioBlob = new Blob(this.chunks, { 'type': 'audio/mp4;' });
               console.log(audioBlob);
               console.log(this.chunks);
@@ -179,7 +186,7 @@ export class SpeechModal {
     await alert.present();
   }
 
-  public componentDidUnload() {
+  public componentWillUnload() {
     console.log('stopping');
     this.recog.stopContinuousRecognitionAsync();
     this.mediaRecorder.stop();
@@ -206,7 +213,7 @@ export class SpeechModal {
       </ion-header>,
 
       <ion-content>
-        <ion-list id="speechModalList">
+        <ion-list lines="none" id="speechModalList">
           {
             this.messages ? this.messages.map((message) => {
               return (

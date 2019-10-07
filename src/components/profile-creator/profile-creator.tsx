@@ -1,4 +1,6 @@
-import { Component, Prop, State, h } from '@stencil/core';
+import { Component, State, h } from '@stencil/core';
+
+import { alertController as alertCtrl, loadingController as loadingCtrl } from '@ionic/core';
 
 import { get, set } from 'idb-keyval';
 
@@ -10,8 +12,8 @@ declare var MediaRecorder: any;
 })
 export class ProfileCreator {
 
-  @Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement | null = null;
-  @Prop({ connect: 'ion-loading-controller' }) loadingCtrl: HTMLIonLoadingControllerElement | null = null;
+  /*@Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement | null = null;
+  @Prop({ connect: 'ion-loading-controller' }) loadingCtrl: HTMLIonLoadingControllerElement | null = null;*/
 
   @State() speakerName: string;
 
@@ -20,7 +22,7 @@ export class ProfileCreator {
   chunks: Array<any> = [];
 
   public async newSpeaker() {
-    const alert = await this.alertCtrl.create({
+    const alert = await alertCtrl.create({
       header: "New Speaker",
       message: "Create a new speaker profile",
       inputs: [
@@ -55,7 +57,7 @@ export class ProfileCreator {
 
     await alert.present();
 
-    const recordAlert = await this.alertCtrl.create({
+    const recordAlert = await alertCtrl.create({
       header: "test audio",
       message: "We need to listen to this user speak for 30 seconds to identify them in the session",
       buttons: [
@@ -120,7 +122,7 @@ export class ProfileCreator {
 
   async handleEvents() {
     console.log('handling events');
-    const loading = await this.loadingCtrl.create({
+    const loading = await loadingCtrl.create({
       message: "Keep talking..."
     });
     await loading.present();

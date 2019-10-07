@@ -1,4 +1,4 @@
-import { Component, Element, Prop, h } from '@stencil/core';
+import { Component, Element, Prop, h, State } from '@stencil/core';
 
 
 @Component({
@@ -11,31 +11,36 @@ export class SpeechDetail {
 
   @Prop() session: any;
 
+  @State() supportsShare: boolean;
+
   public componentDidLoad() {
     console.log(this.session);
+
+    if ((navigator as any).canShare) {
+      this.supportsShare = true;
+    }
+    else {
+      this.supportsShare = false;
+    }
   }
 
   public async dismiss(): Promise<void> {
     await (this.el.closest('ion-modal') as any).dismiss();
   }
 
-  public async share() {
+  async share(): Promise<any> {
+    const audioFile = new File([this.session.audio], `${this.session.name}.mp4`, {type: 'audio/mp4', lastModified: Date.now()});
 
-    let messageText = '';
-
-    this.session.messages.forEach(message => {
-      messageText = messageText + message + '\n' + '\n'
-    });
-
-    try {
-      await (navigator as any).share({
-        title: this.session.name,
-        text: messageText,
-        url: null,
-      });
-
-    } catch (err) {
-      console.error('There was an error trying to share this content'), err;
+    if ((navigator as any).canShare && (navigator as any).canShare( { files: [audioFile] } )) {
+      (navigator as any).share({
+        files: [audioFile],
+        title: 'New notes',
+        text: 'Here is that new audio note',
+      })
+      .then(() => console.log('Share was successful.'))
+      .catch((error) => console.log('Sharing failed', error));
+    } else {
+      console.log('Your system doesn\'t support sharing files.');
     }
   }
 
@@ -60,11 +65,11 @@ export class SpeechDetail {
 
           <ion-title>{this.session.name}</ion-title>
 
-          <ion-buttons slot="end">
+          {this.supportsShare ? <ion-buttons slot="end">
             <ion-button onClick={() => this.share()} slot="icon-only">
               <ion-icon name="share"></ion-icon>
             </ion-button>
-          </ion-buttons>
+          </ion-buttons> : null}
         </ion-toolbar>
       </ion-header>,
 
@@ -74,20 +79,21 @@ export class SpeechDetail {
         </div>
 
         <div id="messagesList">
-          <ion-list id="detailList">
+          <ion-list lines="none" id="detailList">
             {
               this.session.messages.map((message) => {
                 return (
                   <ion-item>
                     <ion-label class="messageLabel" text-wrap>
+                      <div class="messageLabelCopyButton">
+                        <ion-button onClick={() => this.copy(message)} size="small" fill="clear">
+                          <ion-icon name="copy"></ion-icon>
+                        </ion-button>
+                      </div>
+
                       {message}
                     </ion-label>
 
-                    <ion-buttons slot="end">
-                      <ion-fab-button onClick={() => this.copy(message)} size="small">
-                        <ion-icon name="copy"></ion-icon>
-                      </ion-fab-button>
-                    </ion-buttons>
                   </ion-item>
                 )
               })

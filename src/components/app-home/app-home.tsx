@@ -1,4 +1,6 @@
-import { Component, Element, Prop, State, h } from '@stencil/core';
+import { Component, Element, State, h } from '@stencil/core';
+
+import { modalController as modalCtrl, actionSheetController as actionSheetCtrl } from '@ionic/core';
 
 import { get } from 'idb-keyval';
 
@@ -8,13 +10,19 @@ import { get } from 'idb-keyval';
 })
 export class AppHome {
 
-  @Prop({ connect: 'ion-modal-controller' }) modalCtrl: HTMLIonModalControllerElement | null = null;
-
   @State() sessions: Array<any> | null = null;
+  @State() supportsShare: boolean;
 
   @Element() el: HTMLElement;
 
   public async componentDidLoad() {
+    if ((navigator as any).canShare) {
+      this.supportsShare = true;
+    }
+    else {
+      this.supportsShare = false;
+    }
+
     const saved: Array<any> = await get('savedSessions');
 
     if (saved) {
@@ -24,7 +32,7 @@ export class AppHome {
   }
 
   public async newSpeech(): Promise<void> {
-    const modal = await this.modalCtrl.create({
+    const modal = await modalCtrl.create({
       component: 'speech-modal'
     });
     await modal.present();
@@ -40,7 +48,7 @@ export class AppHome {
   }
 
   public async viewSession(session: any) {
-    const modal = await this.modalCtrl.create({
+    const modal = await modalCtrl.create({
       component: 'speech-detail',
       componentProps: {
         session
@@ -74,32 +82,50 @@ export class AppHome {
   }
 
   async share(session): Promise<any> {
+    const audioFile = new File([session.audio], `${session.name}.mp4`, {type: 'audio/mp4', lastModified: Date.now()});
 
-    let messageText = '';
-
-    session.messages.forEach(message => {
-      messageText = messageText + message + '\n' + '\n'
-    });
-
-    try {
-      await (navigator as any).share({
-        title: session.name,
-        text: messageText,
-        url: null,
-      });
-
-    } catch (err) {
-      console.error('There was an error trying to share this content'), err;
+    if ((navigator as any).canShare && (navigator as any).canShare( { files: [audioFile] } )) {
+      (navigator as any).share({
+        files: [audioFile],
+        title: 'New notes',
+        text: 'Here is that new audio note',
+      })
+      .then(() => console.log('Share was successful.'))
+      .catch((error) => console.log('Sharing failed', error));
+    } else {
+      console.log('Your system doesn\'t support sharing files.');
     }
   }
 
-  playAudio(audioString) {
+  playAudio(audioString, session) {
     if (audioString) {
       const audio = this.el.querySelector('audio');
-      audio.src= window.URL.createObjectURL(audioString);
+      audio.src = window.URL.createObjectURL(audioString);
 
-      audio.oncanplay = () => {
-        audio.play();
+      audio.oncanplay = async () => {
+        await audio.play();
+
+        const sheet = await actionSheetCtrl.create({
+          header: 'Audio Control',
+          buttons: [
+            {
+              text: 'stop',
+              icon: 'pause',
+              handler: () => {
+                audio.pause();
+              }
+            },
+            {
+              text: 'share',
+              icon: 'share',
+              handler: () => {
+                this.share(session);
+              }
+            }
+          ]
+        });
+        await sheet.present();
+
       }
     }
   }
@@ -108,7 +134,7 @@ export class AppHome {
     return [
       <ion-header no-border>
         <ion-toolbar color="primary">
-          <ion-title>EasyConvo</ion-title>
+          <ion-title>ConvoNotes</ion-title>
         </ion-toolbar>
       </ion-header>,
 
@@ -142,41 +168,23 @@ export class AppHome {
               {
                 this.sessions.map((session) => {
                   return (
-                    <ion-item-sliding>
-                      <ion-item>
-                        <ion-label onClick={() => this.viewSession(session)} class="items">
-                          <h2>{session.name}</h2>
-                          <p>Recorded on {session.date}</p>
-                        </ion-label>
+                    <ion-item>
+                      <ion-label onClick={() => this.viewSession(session)} class="items">
+                        <h2>{session.name}</h2>
+                        <p>Recorded on {session.date}</p>
+                      </ion-label>
 
-                        {
-                          window.matchMedia("(min-width: 1200px)").matches ?
-                            <ion-buttons id="desktopButtons">
-                              <ion-button fill="solid" shape="round" color="primary">
-                                <ion-icon size="small" name="share"></ion-icon>
-                              </ion-button>
-                              <ion-button onClick={() => this.playAudio(session.audio ? session.audio : null)} fill="solid" shape="round" color="primary">
-                                <ion-icon size="small" name="play"></ion-icon>
-                              </ion-button>
-                            </ion-buttons>
-                            : null
-                        }
-                      </ion-item>
 
-                      {
-                        window.matchMedia("(min-width: 1200px)").matches ?
-                          null
-                          :
-                          <ion-item-options side="end">
-                            <ion-item-option onClick={() => this.playAudio(session.audio ? session.audio : null)} color="secondary">
-                              <ion-icon slot="icon-only" name="play"></ion-icon>
-                            </ion-item-option>
-                            <ion-item-option color="primary">
-                              <ion-icon slot="icon-only" name="share"></ion-icon>
-                            </ion-item-option>
-                          </ion-item-options>
-                      }
-                    </ion-item-sliding>
+                      <ion-buttons id="desktopButtons">
+                        {this.supportsShare ? <ion-fab-button size="small" onClick={() => this.share(session)} color="dark">
+                          <ion-icon size="small" name="share"></ion-icon>
+                        </ion-fab-button> : null}
+                        <ion-fab-button size="small" onClick={() => this.playAudio(session.audio ? session.audio : null, session)} color="dark">
+                          <ion-icon size="small" name="play"></ion-icon>
+                        </ion-fab-button>
+                      </ion-buttons>
+
+                    </ion-item>
 
                   )
                 })
@@ -185,7 +193,7 @@ export class AppHome {
           </div> :
 
           <div>
-            {/*<h1>Welcome to EasyConvo</h1>
+            {/*<h1>Welcome to ConvoNotes</h1>
 
             <p>Hit the button below to start transcribing your conversation!</p>
 
@@ -198,10 +206,10 @@ export class AppHome {
 
                   <img src="/assets/ai.svg"></img>
 
-                  <h1>Welcome to EasyConvo</h1>
+                  <h1>Welcome to ConvoNotes</h1>
 
                   <p>
-                    EasyConvo gives you the ability to transcribe speech to text in realtime,
+                    ConvoNotes gives you the ability to transcribe speech to text in realtime,
                     trying in with all your favorite services to give you in depth knowledge into whats going on in the world around you
                   </p>
                 </ion-slide>
