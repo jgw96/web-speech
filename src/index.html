@@ -5,9 +5,10 @@
   <meta charset="utf-8">
   <title>ConvoNotes</title>
 
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport"
+    content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="Welcome to ConvoNotes!">
-  <meta name="theme-color" content="#00458e">
+  <meta name="theme-color" content="#0d77e6">
 
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
@@ -19,7 +20,17 @@
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
 
   <link href="/build/app.css" rel="stylesheet">
+  
+  <script>
+    if (!window.MediaRecorder) {
+      document.write(
+        decodeURI('%3Cscript defer src="/assets/media-polyfill.js">%3C/script>')
+      )
+    }
+  </script>
+
   <script type="module" src="/build/app.esm.js"></script>
+
   <script nomodule src="/build/app.js"></script>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">

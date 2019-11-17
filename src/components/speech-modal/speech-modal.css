@@ -24,3 +24,14 @@
 #speechModalList {
   padding: initial !important;
 }
+
+#transcriptDiv {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: var(--ion-color-primary);
+  border-radius: 16px;
+}

@@ -78,7 +78,7 @@ ion-slide h1 {
   }
 }
 
-@media(min-width: 1200px) {
+@media(min-width: 1000px) {
   #homeSessionList {
     margin-left: 10em !important;
     margin-right: 10em !important;
@@ -90,8 +90,8 @@ ion-slide h1 {
   }
 
   ion-list {
-    padding-left: 20em !important;
-    padding-right: 20em !important;
+    padding-left: 16em !important;
+    padding-right: 16em !important;
     padding-top: 2em !important;
   }
 
@@ -121,7 +121,7 @@ ion-slide h1 {
 
   #desktopFab {
     display: initial !important;
-    margin-right: 16em;
+    margin-right: 12em;
   }
 
   #desktopSearch {
@@ -141,9 +141,30 @@ ion-slide h1 {
   }
 }
 
-@media(min-width: 1200px) {
+@media(min-width: 1000px) {
   #homeSessionList {
     display: grid;
     grid-template-columns: auto auto auto;
+  }
+}
+
+@media(min-width: 1240px) {
+  ion-list {
+    padding-left: 24em !important;
+    padding-right: 24em !important;
+    padding-top: 2em !important;
+  }
+
+  #desktopFab {
+    display: initial !important;
+    margin-right: 18em;
+  }
+
+  #sessionsHeader {
+    margin-left: 7.4em;
+  }
+
+  #desktopSearch {
+    margin-left: 12.6em;
   }
 }

@@ -5,8 +5,6 @@ import { alertController as alertCtrl } from '@ionic/core';
 import { get, set } from 'idb-keyval';
 // import * as Comlink from "comlink";
 
-declare var MediaRecorder: any;
-
 @Component({
   tag: 'speech-modal',
   styleUrl: 'speech-modal.css'
@@ -25,6 +23,13 @@ export class SpeechModal {
   mediaRecorder;
 
   public async dismiss(): Promise<void> {
+    if (this.mediaRecorder) {
+      console.log(this.mediaRecorder);
+      this.mediaRecorder.stop();
+    }
+
+    this.recog.stopContinuousRecognitionAsync();
+
     await (this.el.closest('ion-modal') as any).dismiss();
   }
 
@@ -61,17 +66,26 @@ export class SpeechModal {
     }
   }
 
-  setupRecord(stream) {
-    this.mediaRecorder = new MediaRecorder(stream);
+  async setupRecord(stream) {
+    this.mediaRecorder = new (window as any).MediaRecorder(stream);
     console.log(this.mediaRecorder);
 
     this.mediaRecorder.start();
+
+    this.recordingAlert();
 
     this.chunks = [];
 
     this.mediaRecorder.ondataavailable = (e) => {
       console.log('e', e);
       this.chunks.push(e.data);
+    }
+  }
+
+  public recordingAlert() {
+    if (window.speechSynthesis) {
+      const utterance = new SpeechSynthesisUtterance("Recording started");
+      window.speechSynthesis.speak(utterance);
     }
   }
 
@@ -123,7 +137,10 @@ export class SpeechModal {
 
   public async save() {
     this.recog.stopContinuousRecognitionAsync();
-    this.mediaRecorder.stop();
+
+    if (this.mediaRecorder) {
+      this.mediaRecorder.stop();
+    }
 
     const alert = await alertCtrl.create({
       header: "Save Session",
@@ -167,9 +184,22 @@ export class SpeechModal {
             }
 
             const sessions = (await get('savedSessions') as any[]);
+            console.log('sessions type', typeof (sessions));
 
             if (sessions) {
-              await set('savedSessions', [...sessions, { name: data.sessionName, messages: this.messages, audio: blob, date: new Date().toLocaleDateString() }]);
+
+              sessions.push({ name: data.sessionName, messages: this.messages, audio: blob, date: new Date().toLocaleDateString() });
+
+              console.log('sessions', sessions);
+
+              try {
+                await set('savedSessions', sessions);
+              }
+              catch (err) {
+                console.log(err);
+
+                await set('savedSessions', sessions);
+              }
 
               await (this.el.closest('ion-modal') as any).dismiss();
             }
@@ -189,7 +219,10 @@ export class SpeechModal {
   public componentWillUnload() {
     console.log('stopping');
     this.recog.stopContinuousRecognitionAsync();
-    this.mediaRecorder.stop();
+
+    if (this.mediaRecorder) {
+      this.mediaRecorder.stop();
+    }
   }
 
   render() {
@@ -226,19 +259,11 @@ export class SpeechModal {
             }) : null
           }
         </ion-list>
-      </ion-content>,
 
-      <ion-footer>
-        <ion-toolbar color="primary">
-          <p id="textP">
-            {this.transcript}
-          </p>
-
-          <ion-buttons slot="end">
-            <ion-spinner></ion-spinner>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-footer>
+        <div id="transcriptDiv">
+          <p>{this.transcript}</p>
+        </div>
+      </ion-content>
     ]
   }
 }

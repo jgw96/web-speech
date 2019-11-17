@@ -1,6 +1,6 @@
 import { Component, Element, State, h } from '@stencil/core';
 
-import { modalController as modalCtrl, actionSheetController as actionSheetCtrl } from '@ionic/core';
+import { modalController as modalCtrl, actionSheetController } from '@ionic/core';
 
 import { get } from 'idb-keyval';
 
@@ -15,7 +15,7 @@ export class AppHome {
 
   @Element() el: HTMLElement;
 
-  public async componentDidLoad() {
+  public async componentWillLoad() {
     if ((navigator as any).canShare) {
       this.supportsShare = true;
     }
@@ -82,30 +82,33 @@ export class AppHome {
   }
 
   async share(session): Promise<any> {
-    const audioFile = new File([session.audio], `${session.name}.mp4`, {type: 'audio/mp4', lastModified: Date.now()});
+    const audioFile = new File([session.audio], `${session.name}.mp4`, { type: 'audio/mp4', lastModified: Date.now() });
 
-    if ((navigator as any).canShare && (navigator as any).canShare( { files: [audioFile] } )) {
+    if ((navigator as any).canShare && (navigator as any).canShare({ files: [audioFile] })) {
       (navigator as any).share({
         files: [audioFile],
         title: 'New notes',
         text: 'Here is that new audio note',
       })
-      .then(() => console.log('Share was successful.'))
-      .catch((error) => console.log('Sharing failed', error));
+        .then(() => console.log('Share was successful.'))
+        .catch((error) => console.log('Sharing failed', error));
     } else {
       console.log('Your system doesn\'t support sharing files.');
     }
   }
 
-  playAudio(audioString, session) {
+  async playAudio(audioString, session) {
+    console.log('audioString', audioString);
     if (audioString) {
       const audio = this.el.querySelector('audio');
       audio.src = window.URL.createObjectURL(audioString);
 
+      console.log('here', audio);
+
       audio.oncanplay = async () => {
         await audio.play();
 
-        const sheet = await actionSheetCtrl.create({
+        const sheet = await actionSheetController.create({
           header: 'Audio Control',
           buttons: [
             {
@@ -126,6 +129,9 @@ export class AppHome {
         });
         await sheet.present();
 
+        audio.onpause = async () => {
+          await sheet.dismiss();
+        }
       }
     }
   }
@@ -133,8 +139,8 @@ export class AppHome {
   render() {
     return [
       <ion-header no-border>
-        <ion-toolbar color="primary">
-          <ion-title>ConvoNotes</ion-title>
+        <ion-toolbar>
+          {window.matchMedia("(min-width: 1000px)").matches ? <ion-title>ConvoNotes</ion-title> : <ion-title>Notes</ion-title>}
         </ion-toolbar>
       </ion-header>,
 
@@ -145,15 +151,15 @@ export class AppHome {
         {this.sessions ?
 
           <div>
-            <ion-toolbar id="mobileSearch" color="primary">
-              <ion-searchbar onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
+            <ion-toolbar id="mobileSearch">
+              <ion-searchbar color="primary" onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
             </ion-toolbar>
 
             <ion-searchbar color="primary" id="desktopSearch" onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
 
             {
               <div id="desktopHeader">
-                <h2 id="sessionsHeader">Sessions</h2>
+                <h2 id="sessionsHeader">Notes</h2>
 
                 <ion-button id="desktopFab" color="primary" onClick={() => this.newSpeech()}>
                   New
@@ -176,10 +182,10 @@ export class AppHome {
 
 
                       <ion-buttons id="desktopButtons">
-                        {this.supportsShare ? <ion-fab-button size="small" onClick={() => this.share(session)} color="dark">
+                        {this.supportsShare ? <ion-fab-button size="small" onClick={() => this.share(session)}>
                           <ion-icon size="small" name="share"></ion-icon>
                         </ion-fab-button> : null}
-                        <ion-fab-button size="small" onClick={() => this.playAudio(session.audio ? session.audio : null, session)} color="dark">
+                        <ion-fab-button size="small" onClick={() => this.playAudio(session.audio ? session.audio : null, session)}>
                           <ion-icon size="small" name="play"></ion-icon>
                         </ion-fab-button>
                       </ion-buttons>
@@ -193,15 +199,8 @@ export class AppHome {
           </div> :
 
           <div>
-            {/*<h1>Welcome to ConvoNotes</h1>
-
-            <p>Hit the button below to start transcribing your conversation!</p>
-
-            <ion-button onClick={() => this.newSpeech()}>
-              Get Started
-            </ion-button>*/
-
-              <ion-slides pager={true}>
+            {
+              <ion-slides pager={false}>
                 <ion-slide>
 
                   <img src="/assets/ai.svg"></img>
@@ -209,14 +208,9 @@ export class AppHome {
                   <h1>Welcome to ConvoNotes</h1>
 
                   <p>
-                    ConvoNotes gives you the ability to transcribe speech to text in realtime,
-                    trying in with all your favorite services to give you in depth knowledge into whats going on in the world around you
+                    ConvoNotes is your personal meeting note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss
+                    a detail from a meeting again!
                   </p>
-                </ion-slide>
-
-                <ion-slide>
-
-                  <img src="/assets/firmware.svg"></img>
 
                   <ion-button id="startButton" onClick={() => this.newSpeech()}>
                     Get Started
@@ -227,7 +221,7 @@ export class AppHome {
           </div>
         }
 
-        {this.sessions ? <ion-fab id="mobileFab" vertical="bottom" horizontal="end" slot="fixed">
+        {this.sessions ? <ion-fab id="mobileFab" vertical="bottom" horizontal="center" slot="fixed">
           <ion-fab-button onClick={() => this.newSpeech()}>
             <ion-icon name="add"></ion-icon>
           </ion-fab-button>
