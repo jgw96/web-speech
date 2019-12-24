@@ -1,4 +1,4 @@
-import { Component, Element, State, h } from '@stencil/core';
+import { Component, Element, State, Listen, h } from '@stencil/core';
 
 import { modalController as modalCtrl, actionSheetController } from '@ionic/core';
 
@@ -13,8 +13,14 @@ export class AppHome {
 
   @State() sessions: Array<any> | null = null;
   @State() supportsShare: boolean;
+  @State() canInstall: boolean = false;
 
   @Element() el: HTMLElement;
+
+  @Listen('beforeinstallprompt', { target: 'window' })
+  handleInstall() {
+    this.canInstall = true;
+  }
 
   public async componentWillLoad() {
     if ((navigator as any).canShare) {
@@ -153,7 +159,7 @@ export class AppHome {
 
           <div>
 
-            <pwa-install>Install ConvoNotes</pwa-install>
+            {this.canInstall ? <pwa-install>Install ConvoNotes</pwa-install> : null}
 
             <ion-toolbar id="mobileSearch">
               <ion-searchbar color="primary" onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
