@@ -1,13 +1,19 @@
 {
   "name": "ConvoNotes",
+  "description": "ConvoNotes is your personal note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss a detail again!",
   "short_name": "ConvoNotes",
   "start_url": "/",
   "display": "standalone",
+  "features": [
+    "Cross Platform",
+    "fast",
+    "Real time Speech to Text"
+  ],
   "icons": [
     {
       "src": "assets/icon/icon512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
     },
     {
       "src": "assets/icon/icon256.png",
@@ -30,6 +36,6 @@
       "type": "image/png"
     }
   ],
-  "background_color": "#0d77e6",
-  "theme_color": "#0d77e6"
+  "background_color": "#ff528e",
+  "theme_color": "#ff528e"
 }

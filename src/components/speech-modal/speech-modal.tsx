@@ -23,13 +23,6 @@ export class SpeechModal {
   mediaRecorder;
 
   public async dismiss(): Promise<void> {
-    if (this.mediaRecorder) {
-      console.log(this.mediaRecorder);
-      this.mediaRecorder.stop();
-    }
-
-    this.recog.stopContinuousRecognitionAsync();
-
     await (this.el.closest('ion-modal') as any).dismiss();
   }
 
@@ -216,12 +209,12 @@ export class SpeechModal {
     await alert.present();
   }
 
-  public componentWillUnload() {
+  public disconnectedCallback() {
     console.log('stopping');
     this.recog.stopContinuousRecognitionAsync();
 
     if (this.mediaRecorder) {
-      this.mediaRecorder.stop();
+      this.mediaRecorder = null;
     }
   }
 

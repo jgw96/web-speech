@@ -3,6 +3,7 @@ import { Component, Element, State, h } from '@stencil/core';
 import { modalController as modalCtrl, actionSheetController } from '@ionic/core';
 
 import { get } from 'idb-keyval';
+import '@pwabuilder/pwainstall';
 
 @Component({
   tag: 'app-home',
@@ -151,6 +152,9 @@ export class AppHome {
         {this.sessions ?
 
           <div>
+
+            <pwa-install>Install ConvoNotes</pwa-install>
+
             <ion-toolbar id="mobileSearch">
               <ion-searchbar color="primary" onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
             </ion-toolbar>
@@ -208,8 +212,8 @@ export class AppHome {
                   <h1>Welcome to ConvoNotes</h1>
 
                   <p>
-                    ConvoNotes is your personal meeting note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss
-                    a detail from a meeting again!
+                    ConvoNotes is your personal note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss
+                    a detail again!
                   </p>
 
                   <ion-button id="startButton" onClick={() => this.newSpeech()}>
