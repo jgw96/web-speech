@@ -1,6 +1,6 @@
 import { Component, Element, State, Listen, h } from '@stencil/core';
 
-import { modalController as modalCtrl, actionSheetController } from '@ionic/core';
+import { modalController as modalCtrl, actionSheetController, toastController } from '@ionic/core';
 
 import { get } from 'idb-keyval';
 import '@pwabuilder/pwainstall';
@@ -100,7 +100,44 @@ export class AppHome {
         .then(() => console.log('Share was successful.'))
         .catch((error) => console.log('Sharing failed', error));
     } else {
-      console.log('Your system doesn\'t support sharing files.');
+      const toast = await toastController.create({
+        message: "Downloading for sharing"
+      });
+      await toast.present();
+
+      await this.download(session);
+      
+      await toast.dismiss();
+    }
+  }
+
+  async download(session) {
+    const audioFile = new File([session.audio], `${session.name}.mp4`, { type: 'audio/mp4', lastModified: Date.now() });
+
+    if ("chooseFileSystemEntries" in window) {
+      const opts = {
+        type: 'saveFile',
+        accepts: [{
+          description: 'Audio file',
+          extensions: ['mp4']
+        }],
+      };
+      const handle = await (window as any).chooseFileSystemEntries(opts);
+
+      if (handle) {
+        const writer = await handle.createWriter();
+        await writer.write(0, audioFile);
+        await writer.close();
+      }
+    }
+    else {
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(session.audio);
+
+      link.setAttribute('href', url);
+      link.type = "audio/mp4";
+      link.setAttribute('download', `${session.name}.mp4`);
+      link.click();
     }
   }
 

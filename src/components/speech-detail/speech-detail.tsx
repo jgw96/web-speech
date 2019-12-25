@@ -1,4 +1,5 @@
 import { Component, Element, Prop, h, State } from '@stencil/core';
+import { toastController } from '@ionic/core';
 
 
 @Component({
@@ -40,7 +41,14 @@ export class SpeechDetail {
         .then(() => console.log('Share was successful.'))
         .catch((error) => console.log('Sharing failed', error));
     } else {
-      console.log('Your system doesn\'t support sharing files.');
+      const toast = await toastController.create({
+        message: "Downloading for sharing"
+      });
+      await toast.present();
+
+      await this.download();
+      
+      await toast.dismiss();
     }
   }
 
