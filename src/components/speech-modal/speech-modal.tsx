@@ -1,4 +1,4 @@
-import { Component, Element, State, h } from '@stencil/core';
+import { Component, Element, Listen, State, h } from '@stencil/core';
 
 import { alertController as alertCtrl } from '@ionic/core';
 
@@ -15,7 +15,6 @@ export class SpeechModal {
 
   @State() transcript: string = 'You can start talking...';
   @State() messages: Array<string> | null = [];
-  // @Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement | null = null;
 
   audioContext: AudioContext;
   recog: any;
@@ -62,6 +61,13 @@ export class SpeechModal {
     if ((navigator as any).wakeLock) {
       this.wakeLock = await (navigator as any).wakeLock.request('screen');
     }
+
+    history.pushState({modal: true}, null);
+  }
+
+  @Listen('popstate', { target: 'window' })
+  async handleDismiss() {
+    await this.dismiss();
   }
 
   async setupRecord(stream) {

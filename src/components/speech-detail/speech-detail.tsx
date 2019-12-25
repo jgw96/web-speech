@@ -1,4 +1,4 @@
-import { Component, Element, Prop, h, State } from '@stencil/core';
+import { Component, Element, Listen, Prop, h, State } from '@stencil/core';
 import { toastController } from '@ionic/core';
 
 
@@ -23,6 +23,13 @@ export class SpeechDetail {
     else {
       this.supportsShare = false;
     }
+
+    history.pushState({modal: true}, null);
+  }
+
+  @Listen('popstate', { target: 'window' })
+  async handleDismiss() {
+    await this.dismiss();
   }
 
   public async dismiss(): Promise<void> {
