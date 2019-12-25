@@ -21,6 +21,7 @@ export class SpeechModal {
   recog: any;
   chunks: any[] = [];
   mediaRecorder;
+  wakeLock: any;
 
   public async dismiss(): Promise<void> {
     await (this.el.closest('ion-modal') as any).dismiss();
@@ -56,6 +57,10 @@ export class SpeechModal {
         });
 
       this.setupRecord(stream);
+    }
+
+    if ((navigator as any).wakeLock) {
+      this.wakeLock = await (navigator as any).wakeLock.request('screen');
     }
   }
 
@@ -215,6 +220,10 @@ export class SpeechModal {
 
     if (this.mediaRecorder) {
       this.mediaRecorder = null;
+    }
+
+    if (this.wakeLock) {
+      this.wakeLock.release();
     }
   }
 

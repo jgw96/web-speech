@@ -92,22 +92,31 @@ export class AppHome {
     const audioFile = new File([session.audio], `${session.name}.mp4`, { type: 'audio/mp4', lastModified: Date.now() });
 
     if ((navigator as any).canShare && (navigator as any).canShare({ files: [audioFile] })) {
-      (navigator as any).share({
-        files: [audioFile],
-        title: 'New notes',
-        text: 'Here is that new audio note',
-      })
-        .then(() => console.log('Share was successful.'))
-        .catch((error) => console.log('Sharing failed', error));
+      try {
+        await (navigator as any).share({
+          files: [audioFile],
+          title: 'New notes',
+          text: 'Here is that new audio note',
+        })
+      }
+      catch (err) {
+        const toast = await toastController.create({
+          message: "Downloading for sharing",
+          duration: 2000
+        });
+        await toast.present();
+
+        await this.download(session);
+      }
+
     } else {
       const toast = await toastController.create({
-        message: "Downloading for sharing"
+        message: "Downloading for sharing",
+        duration: 2000
       });
       await toast.present();
 
       await this.download(session);
-      
-      await toast.dismiss();
     }
   }
 

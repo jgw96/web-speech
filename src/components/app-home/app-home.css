@@ -22,6 +22,7 @@
   padding-right: 1.8em;
   padding-top: 0.8em;
   padding-bottom: 0.8em;
+  cursor: pointer;
 }
 
 #sessionsHeader {
