@@ -62,7 +62,7 @@ export class SpeechModal {
       this.wakeLock = await (navigator as any).wakeLock.request('screen');
     }
 
-    history.pushState({modal: true}, null);
+    history.pushState({ modal: true }, null);
   }
 
   @Listen('popstate', { target: 'window' })
@@ -244,6 +244,12 @@ export class SpeechModal {
           </ion-buttons>
 
           <ion-title>New Session</ion-title>
+
+          { window.matchMedia("(min-width: 1000px)").matches ? <ion-buttons slot="end">
+            <ion-button onClick={() => this.save()}>
+              <ion-icon name="save"></ion-icon>
+            </ion-button>
+          </ion-buttons> : null}
         </ion-toolbar>
       </ion-header>,
 
@@ -268,11 +274,11 @@ export class SpeechModal {
         <ion-toolbar>
           <p id="transcript">{this.transcript}</p>
 
-          <ion-buttons slot="end">
+          {window.matchMedia("(min-width: 1000px)").matches ? null : <ion-buttons slot="end">
             <ion-button onClick={() => this.save()}>
               <ion-icon name="save"></ion-icon>
             </ion-button>
-          </ion-buttons>
+          </ion-buttons>}
         </ion-toolbar>
       </ion-footer>
     ]
