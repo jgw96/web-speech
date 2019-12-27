@@ -1,5 +1,5 @@
 import { Component, Element, Listen, Prop, h, State } from '@stencil/core';
-import { toastController } from '@ionic/core';
+import { toastController, actionSheetController } from '@ionic/core';
 
 
 @Component({
@@ -97,6 +97,42 @@ export class SpeechDetail {
     }
   }
 
+  async playAudio() {
+    if (this.session.audio) {
+      const audio = this.el.querySelector('audio');
+      audio.src = window.URL.createObjectURL(this.session.audio);
+
+      audio.oncanplay = async () => {
+        await audio.play();
+
+        const sheet = await actionSheetController.create({
+          header: 'Audio Control',
+          buttons: [
+            {
+              text: 'stop',
+              icon: 'pause',
+              handler: () => {
+                audio.pause();
+              }
+            },
+            {
+              text: 'share',
+              icon: 'share',
+              handler: () => {
+                this.share();
+              }
+            }
+          ]
+        });
+        await sheet.present();
+
+        audio.onpause = async () => {
+          await sheet.dismiss();
+        }
+      }
+    }
+  }
+
   render() {
     return [
       <ion-header no-border>
@@ -110,6 +146,10 @@ export class SpeechDetail {
           <ion-title>{this.session.name}</ion-title>
 
           <ion-buttons slot="end">
+            <ion-button onClick={() => this.playAudio()} slot="icon-only">
+              <ion-icon name="play"></ion-icon>
+            </ion-button>
+
             <ion-button onClick={() => this.download()} slot="icon-only">
               <ion-icon name="download"></ion-icon>
             </ion-button>
@@ -122,6 +162,8 @@ export class SpeechDetail {
       </ion-header>,
 
       <ion-content>
+        <audio></audio>
+        
         <div id="infoDiv">
           <p>Recorded on {this.session.date}</p>
         </div>

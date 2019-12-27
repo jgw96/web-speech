@@ -1,7 +1,7 @@
 {
-  "name": "ConvoNotes",
-  "description": "ConvoNotes is your personal note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss a detail again!",
-  "short_name": "ConvoNotes",
+  "name": "Scribe",
+  "description": "Scribe is your personal note-taker. Scribe will record and transcribe speech to text in real time, never miss a detail again!",
+  "short_name": "Scribe",
   "start_url": "/",
   "display": "standalone",
   "features": [

@@ -193,7 +193,7 @@ export class AppHome {
     return [
       <ion-header no-border>
         <ion-toolbar>
-          {window.matchMedia("(min-width: 1000px)").matches ? <ion-title>ConvoNotes</ion-title> : <ion-title>Notes</ion-title>}
+          <ion-title>Scribe</ion-title>
         </ion-toolbar>
       </ion-header>,
 
@@ -205,7 +205,7 @@ export class AppHome {
 
           <div>
 
-            {this.canInstall ? <pwa-install>Install ConvoNotes</pwa-install> : null}
+            {this.canInstall ? <pwa-install>Install Scribe</pwa-install> : null}
 
             <ion-toolbar id="mobileSearch">
               <ion-searchbar color="primary" onIonChange={(ev) => this.search(ev.detail.value)}></ion-searchbar>
@@ -237,14 +237,14 @@ export class AppHome {
                       </ion-label>
 
 
-                      <ion-buttons id="desktopButtons">
+                      {window.matchMedia("(min-width: 400px)").matches ? <ion-buttons id="desktopButtons">
                         <ion-fab-button size="small" onClick={() => this.share(session)}>
                           {this.supportsShare ? <ion-icon size="small" name="share"></ion-icon> : <ion-icon size="small" name="download"></ion-icon>}
                         </ion-fab-button>
                         <ion-fab-button size="small" onClick={() => this.playAudio(session.audio ? session.audio : null, session)}>
                           <ion-icon size="small" name="play"></ion-icon>
                         </ion-fab-button>
-                      </ion-buttons>
+                      </ion-buttons> : null}
 
                     </ion-item>
 
@@ -261,10 +261,10 @@ export class AppHome {
 
                   <img src="/assets/ai.svg"></img>
 
-                  <h1>Welcome to ConvoNotes</h1>
+                  <h1>Welcome to Scribe</h1>
 
                   <p>
-                    ConvoNotes is your personal note-taker. ConvoNotes will record and transcribe speech to text in real time, never miss
+                    Scribe is your personal note-taker. Scribe will record and transcribe speech to text in real time, never miss
                     a detail again!
                   </p>
 
