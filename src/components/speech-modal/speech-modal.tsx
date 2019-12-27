@@ -236,7 +236,7 @@ export class SpeechModal {
   render() {
     return [
       <ion-header no-border>
-        <ion-toolbar color="primary">
+        <ion-toolbar>
           <ion-buttons slot="start">
             <ion-button onClick={() => this.dismiss()}>
               <ion-icon name="close"></ion-icon>
@@ -244,12 +244,6 @@ export class SpeechModal {
           </ion-buttons>
 
           <ion-title>New Session</ion-title>
-
-          <ion-buttons slot="end">
-            <ion-button onClick={() => this.save()}>
-              <ion-icon name="save"></ion-icon>
-            </ion-button>
-          </ion-buttons>
         </ion-toolbar>
       </ion-header>,
 
@@ -268,10 +262,19 @@ export class SpeechModal {
           }
         </ion-list>
 
-        <div id="transcriptDiv">
-          <p>{this.transcript}</p>
-        </div>
-      </ion-content>
+      </ion-content>,
+
+      <ion-footer>
+        <ion-toolbar>
+          <p id="transcript">{this.transcript}</p>
+
+          <ion-buttons slot="end">
+            <ion-button onClick={() => this.save()}>
+              <ion-icon name="save"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-footer>
     ]
   }
 }

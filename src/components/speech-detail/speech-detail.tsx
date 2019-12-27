@@ -14,7 +14,7 @@ export class SpeechDetail {
 
   @State() supportsShare: boolean;
 
-  public componentDidLoad() {
+  public componentWillLoad() {
     console.log(this.session);
 
     if ((navigator as any).canShare) {
@@ -100,7 +100,7 @@ export class SpeechDetail {
   render() {
     return [
       <ion-header no-border>
-        <ion-toolbar color="primary">
+        <ion-toolbar>
           <ion-buttons slot="start">
             <ion-button onClick={() => this.dismiss()}>
               <ion-icon name="close"></ion-icon>

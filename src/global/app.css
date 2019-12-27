@@ -95,9 +95,6 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
-ion-alert {
-  --ion-text-color: var(--ion-color-dark);
-}
 
 ion-searchbar input {
   border-radius: 20px !important;
@@ -130,5 +127,13 @@ ion-searchbar input {
     --ion-color-step-850: #dcdcdc;
     --ion-color-step-900: #e8e8e8;
     --ion-color-step-950: #f3f3f3;
+  }
+
+  .alert-title.sc-ion-alert-md {
+    color: #FFFFFF;
+  }
+  
+  .alert-input.sc-ion-alert-md {
+    color: #FFFFFF;
   }
 }

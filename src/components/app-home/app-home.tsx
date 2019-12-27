@@ -238,9 +238,9 @@ export class AppHome {
 
 
                       <ion-buttons id="desktopButtons">
-                        {this.supportsShare ? <ion-fab-button size="small" onClick={() => this.share(session)}>
-                          <ion-icon size="small" name="share"></ion-icon>
-                        </ion-fab-button> : null}
+                        <ion-fab-button size="small" onClick={() => this.share(session)}>
+                          {this.supportsShare ? <ion-icon size="small" name="share"></ion-icon> : <ion-icon size="small" name="download"></ion-icon>}
+                        </ion-fab-button>
                         <ion-fab-button size="small" onClick={() => this.playAudio(session.audio ? session.audio : null, session)}>
                           <ion-icon size="small" name="play"></ion-icon>
                         </ion-fab-button>
