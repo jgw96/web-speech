@@ -40,6 +40,25 @@ export class AppHome {
     }
   }
 
+  async componentDidLoad() {
+
+    const test = localStorage.getItem("firstSeen");
+
+    if (test === null) {
+      const toast = await toastController.create({
+        message: "Scribe currently uses analytics to measure usage. No personal or identifiable data is collected. By continuing to use this app you agree to this.",
+        showCloseButton: true,
+        closeButtonText: "Ok"
+      });
+
+      await toast.present();
+
+      toast.onDidDismiss().then(() => {
+        localStorage.setItem('firstSeen', "true");
+      });
+    }
+  }
+
   public async newSpeech(): Promise<void> {
     const modal = await modalCtrl.create({
       component: 'speech-modal'
