@@ -103,35 +103,68 @@ export class SpeechDetail {
   }
 
   pause() {
-    this.paused = true;
-
-    setTimeout(() => {
-      const ani = this.el.querySelector("#playButton").animate(
-        [
-          {
-            transform: 'translateY(-20px)'
-          },
-          {
-            transform: 'translateY(0px)'
-          }
-        ],
+    /*this.el.querySelector("#playButton").animate(
+      [
         {
-          duration: 200,
-          fill: "forwards"
+          transform: 'translateY(-20px)'
+        },
+        {
+          transform: 'translateY(0px)'
         }
-      )
-
-      ani.onfinish = () => {
-        console.log('pausing');
-        const audio: HTMLAudioElement = this.el.querySelector('#detailAudio');
-        audio.pause();
-        audio.pause();
-
-        setTimeout(() => {
-          audio.pause();
-        }, 16);
+      ],
+      {
+        duration: 200,
+        fill: "forwards"
       }
-    }, 40);
+    );*/
+
+    const range = this.el.querySelector('ion-range');
+    console.log(range);
+    
+    const pauseButton = this.el.querySelector("#pauseButton");
+
+    range.animate(
+      [
+        {
+          transform: 'translateY(0px)'
+        },
+        {
+          transform: 'translateY(20px)'
+        }
+      ],
+      {
+        duration: 200,
+        fill: "forwards"
+      }
+    )
+
+    const ani2 = pauseButton.animate(
+      [
+        {
+          transform: 'translateY(0px)'
+        },
+        {
+          transform: 'translateY(20px)'
+        }
+      ],
+      {
+        duration: 200,
+        fill: "forwards"
+      }
+    )
+
+    ani2.onfinish = () => {
+      console.log('pausing');
+      const audio: HTMLAudioElement = this.el.querySelector('#detailAudio');
+      audio.pause();
+      audio.pause();
+
+      setTimeout(() => {
+        audio.pause();
+      }, 16);
+
+      this.paused = true;
+    }
   }
 
   async playAudio() {
@@ -148,7 +181,6 @@ export class SpeechDetail {
         duration: 200,
         fill: "forwards"
       });
-    animation.play();
 
     animation.onfinish = () => {
       this.paused = false;
@@ -225,7 +257,6 @@ export class SpeechDetail {
                 return (
                   <ion-item>
                     <ion-label class="messageLabel" text-wrap>
-
                       {message}
                     </ion-label>
 
