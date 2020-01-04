@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.scribe.twa",
+    "sha256_cert_fingerprints": [
+      "21:8D:69:0C:55:F3:BA:06:AE:EC:3F:7D:DB:41:B0:35:DE:6E:88:05:48:98:93:E2:AE:E5:52:97:00:DC:89:B5"
+    ]
+  }
+}] 

@@ -1,5 +1,5 @@
 import { Component, Element, Listen, Prop, h, State } from '@stencil/core';
-import { toastController, actionSheetController } from '@ionic/core';
+import { toastController } from '@ionic/core';
 
 
 @Component({
@@ -14,6 +14,11 @@ export class SpeechDetail {
 
   @State() supportsShare: boolean;
 
+  @State() audioTotalTime: number;
+  @State() audioCurrentTime: number;
+
+  @State() paused: boolean = true;
+
   public componentWillLoad() {
     console.log(this.session);
 
@@ -24,7 +29,7 @@ export class SpeechDetail {
       this.supportsShare = false;
     }
 
-    history.pushState({modal: true}, null);
+    history.pushState({ modal: true }, null);
   }
 
   @Listen('popstate', { target: 'window' })
@@ -97,40 +102,89 @@ export class SpeechDetail {
     }
   }
 
+  pause() {
+    this.paused = true;
+
+    setTimeout(() => {
+      const ani = this.el.querySelector("#playButton").animate(
+        [
+          {
+            transform: 'translateY(-20px)'
+          },
+          {
+            transform: 'translateY(0px)'
+          }
+        ],
+        {
+          duration: 200,
+          fill: "forwards"
+        }
+      )
+
+      ani.onfinish = () => {
+        console.log('pausing');
+        const audio: HTMLAudioElement = this.el.querySelector('#detailAudio');
+        audio.pause();
+        audio.pause();
+
+        setTimeout(() => {
+          audio.pause();
+        }, 16);
+      }
+    }, 40);
+  }
+
   async playAudio() {
-    if (this.session.audio) {
-      const audio = this.el.querySelector('audio');
-      audio.src = window.URL.createObjectURL(this.session.audio);
+    const animation = this.el.querySelector('#playButton').animate(
+      [
+        {
+          transform: 'translateY(0px)'
+        },
+        {
+          transform: 'translateY(-20px)'
+        }
+      ],
+      {
+        duration: 200,
+        fill: "forwards"
+      });
+    animation.play();
 
-      audio.oncanplay = async () => {
-        await audio.play();
+    animation.onfinish = () => {
+      this.paused = false;
 
-        const sheet = await actionSheetController.create({
-          header: 'Audio Control',
-          buttons: [
-            {
-              text: 'stop',
-              icon: 'pause',
-              handler: () => {
-                audio.pause();
-              }
-            },
-            {
-              text: 'share',
-              icon: 'share',
-              handler: () => {
-                this.share();
-              }
-            }
-          ]
-        });
-        await sheet.present();
+      if (this.session.audio) {
+        const audio: HTMLAudioElement = this.el.querySelector('#detailAudio');
+        audio.src = window.URL.createObjectURL(this.session.audio);
 
-        audio.onpause = async () => {
-          await sheet.dismiss();
+        audio.oncanplay = async () => {
+          await audio.play();
+        };
+
+        audio.onloadedmetadata = () => {
+          console.log(audio.duration);
+          this.audioTotalTime = audio.duration;
+        }
+
+        audio.ontimeupdate = async () => {
+          await this.updateTime(audio);
         }
       }
     }
+  }
+
+  updateTime(audio) {
+    return new Promise((resolve) => {
+      console.log(audio.currentTime);
+      this.el.querySelector('ion-range').value = audio.currentTime;
+      resolve();
+    })
+  }
+
+  updateRange(event) {
+    console.log(event);
+    const audio: HTMLAudioElement = this.el.querySelector('#detailAudio');
+    audio.currentTime = event.detail.value;
   }
 
   render() {
@@ -146,10 +200,6 @@ export class SpeechDetail {
           <ion-title>{this.session.name}</ion-title>
 
           <ion-buttons slot="end">
-            <ion-button onClick={() => this.playAudio()} slot="icon-only">
-              <ion-icon name="play"></ion-icon>
-            </ion-button>
-
             <ion-button onClick={() => this.download()} slot="icon-only">
               <ion-icon name="download"></ion-icon>
             </ion-button>
@@ -162,8 +212,8 @@ export class SpeechDetail {
       </ion-header>,
 
       <ion-content>
-        <audio></audio>
-        
+        <audio id="detailAudio"></audio>
+
         <div id="infoDiv">
           <p>Recorded on {this.session.date}</p>
         </div>
@@ -185,7 +235,25 @@ export class SpeechDetail {
             }
           </ion-list>
         </div>
-      </ion-content>
+      </ion-content>,
+
+      <ion-footer>
+        <ion-toolbar>
+          {!this.paused ? <ion-range onIonChange={(event) => this.updateRange(event)} min={0} max={100}>
+            <ion-icon slot="start" name="musical-note"></ion-icon>
+          </ion-range> : null}
+
+          <ion-buttons slot="end">
+            {!this.paused ? <ion-fab-button size="small" color="danger" id="pauseButton" onClick={() => this.pause()}>
+              <ion-icon size="small" name="pause"></ion-icon>
+            </ion-fab-button>
+              :
+              <ion-button shape="round" color="primary" size="small" id="playButton" onClick={() => this.playAudio()}>
+                <ion-text>play recording</ion-text>
+              </ion-button>}
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-footer>
     ]
   }
 }

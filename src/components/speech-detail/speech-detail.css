@@ -45,6 +45,25 @@
   padding: initial !important;
 }
 
+ion-range {
+  margin-right: 16px;
+  animation: slidein 300ms;
+}
+
+#pauseButton {
+  animation: slidein 300ms;
+}
+
+@keyframes slidein {
+  from {
+    transform: translateY(20px);
+  }
+
+  to {
+    transform: translateY(0px);
+  }
+}
+
 @media (min-width: 1200px) {
   #detailList ion-item ion-buttons {
     opacity: 0;

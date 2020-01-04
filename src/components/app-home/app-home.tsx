@@ -5,6 +5,8 @@ import { modalController as modalCtrl, actionSheetController, toastController } 
 import { get } from 'idb-keyval';
 import '@pwabuilder/pwainstall';
 
+import { searchTracks } from '../../storage.worker';
+
 @Component({
   tag: 'app-home',
   styleUrl: 'app-home.css'
@@ -66,26 +68,7 @@ export class AppHome {
 
   public async search(searchQuery: string) {
     console.log(searchQuery);
-
-    if (searchQuery.length > 0) {
-      const lowerCasedSearch = searchQuery.toLowerCase();
-
-      const foundSession = this.sessions.find((element) => {
-        return element.name.includes(lowerCasedSearch);
-      });
-
-      console.log(foundSession);
-
-      this.sessions = [foundSession];
-    }
-    else {
-      const saved: Array<any> = await get('savedSessions');
-
-      if (saved) {
-        console.log(saved);
-        this.sessions = saved;
-      }
-    }
+    this.sessions = await searchTracks(searchQuery, this.sessions);
   }
 
   async share(session): Promise<any> {
@@ -153,7 +136,7 @@ export class AppHome {
   async playAudio(audioString, session) {
     console.log('audioString', audioString);
     if (audioString) {
-      const audio = this.el.querySelector('audio');
+      const audio: HTMLAudioElement = this.el.querySelector('#homeAudio');
       audio.src = window.URL.createObjectURL(audioString);
 
       console.log('here', audio);
@@ -199,7 +182,7 @@ export class AppHome {
 
       <ion-content>
 
-        <audio></audio>
+        <audio id="homeAudio"></audio>
 
         {this.sessions ?
 
@@ -259,7 +242,7 @@ export class AppHome {
               <ion-slides pager={false}>
                 <ion-slide>
 
-                  <img src="/assets/ai.svg"></img>
+                  <img src="/assets/ai.svg" alt="image of robot"></img>
 
                   <h1>Welcome to Scribe</h1>
 
